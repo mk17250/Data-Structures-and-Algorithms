@@ -216,4 +216,4 @@ if __name__ == '__main__':
     # Delete SLL
     mattsSLL.deleteSLL()
    
-    # **** NOTE - to import this script it should be tested nd debugged (if required) more thoroughly ****
+    # **** NOTE - to improve this script it should be tested nd debugged (if required) more thoroughly ****
