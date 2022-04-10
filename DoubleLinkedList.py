@@ -52,19 +52,28 @@ class DoubleLinkedList:
                     self.head = newNode
             # if index value is not passed and is therefore = 'end' and therefore we wish to insert at the end of the DLL
             elif index == 'end':
-                # set node = head, whihc is start of DLL
-                node = self.head
-                # while True or while not empty 
-                while node.next:
-                    # move to next node
-                    node = node.next
-                # once node.next = None, which is the end of the DLL the loop will break
-                # then set pointer of final node, which is currently = none to newNode
-                node.next = newNode
-                # set prev pointer of newnode to end of DLL
-                newNode.prev = node 
-                # set tail to newNode
-                self.tail = newNode
+                # check to see if only node in list
+                if self.head == self.tail:
+                    # if it is, set tail to new node
+                    self.tail = newNode
+                    # set prev on new node to first node 
+                    newNode.prev = self.head
+                    # set pointer of first node to new node
+                    self.head.next = newNode
+                else:
+                    # set node = head, which is start of DLL
+                    node = self.head
+                    # while True or while not empty 
+                    while node.next:
+                        # move to next node
+                        node = node.next
+                    # once node.next = None, which is the end of the DLL the loop will break
+                    # then set pointer of final node, which is currently = none to newNode
+                    node.next = newNode
+                    # set prev pointer of newnode to end of DLL
+                    newNode.prev = node 
+                    # set tail to newNode
+                    self.tail = newNode
             else:
                 # insert anywhere else in list 
                 # set node to start of DLL
@@ -144,57 +153,64 @@ class DoubleLinkedList:
                 node.prev = None
             # if no index value passed into method, delete node at end of list
             elif index == 'end':
-                if not self.head.next:
-                    return print('Index out of range')
+                # check if only node
+                if self.head == self.tail:
+                    # if so, delete node and therefore list
+                    self.head = None
+                    self.tail = None 
                 else:
-                    node = self.head
-                    # while node pointer infront of next node is not none 
-                    while node.next.next:
-                        # traverse through list
-                        node = node.next
-                    # once the pointer of the next node, is none, we are the node infront of final node, loop breaks
-                    # set pointer of current node to none 
-                    node.next = None
-                    # set tail to current node 
-                    self.tail = node
+                    # check to see if this is only node in list
+                    # then delete only node 
+                    if self.tail == self.head:
+                        self.head = None
+                        self.tail = None 
+                    else:
+                        # if not only node in list reassign tail 
+                        self.tail = self.tail.prev
+                        self.tail.next = None 
             else:
                 # anywhere else in list 
-                if not self.head.next:
+                # set current node
+                if self.head == self.tail and index >= 1:
                     return print('Index out of range')
-                    # set current node
-                    node = self.head
-                    # next node 
-                    nextNode = node.next
-                    # set counter 
-                    counter=0
-                    while counter < index-1:
-                        # traverse 
-                        node = node.next
-                        nextNode = nextNode.next
-                        # if index passed is node before final node
-                        if not nextNode.next:
-                            # set pointer to none 
-                            node.next = None
-                            # assign tail to current node 
-                            self.tail = node
-                            return
-                        else:
-                            # else increase counter 
-                            counter+=1
-                    # having reached deletion location, set pointer of current node to node past node for deletion 
-                    node.next = nextNode.next
-                    # move from node being deleted to the node after it 
-                    nextNode = nextNode.next
-                    # set the pointer of this node (the node after node being deleted) to the node before it 
-                    nextNode.prev = node  
+                node = self.head
+                if not node.next.next and index != 1:
+                    return print('Index out of range')
+                elif not node.next.next and index == 1:
+                    self.tail = node
+                    node.next = None
+                    return
+                counter = 0
+                while counter < index-1:
+                    node = node.next 
+                    # check if index out of range
+                    if node.next.next == None and index-counter>2:
+                        return print('Index out of range')
+                    # check to see if final node
+                    elif node.next.next == None and node.next.prev == node:
+                        # if it is set tail to node and node.next to None, and return 
+                        self.tail = node
+                        node.next = None
+                        return
+                    else:
+                        counter += 1 
+                # else, not final node
+                node.next = node.next.next
+                node.next.prev = node
 
+                        
     def deleteAllDLL(self):
         """method to delete all of DLL"""
         # if DLL is empty print 
         if not self.head:
             return print('DLL is empty')
         else:
-            # set tail and head to none, deleting list 
+            # traverse through list and set all prev pointers of each node to None, therefore deleting link 
+            node = self.head
+            while node.next:
+                node.prev = None
+                node = node.next
+            # then set tail and head to none, deleting list 
             self.head = None 
             self.tail = None   
             return print('DLL has been deleted')
@@ -226,29 +242,46 @@ class DoubleLinkedList:
             return print(result)
 
 if __name__ == "__main__":
-
+    print('start')
     # create DLL from DLL class
     DLL = DoubleLinkedList()
     # create the DLL with function nd itialise with value 
     DLL.createDLL(5)
     # print DLL
     DLL.printDLL()
-    DLL.insertDLL(2,0)
+    # DLL.insertDLL(2,0)
     DLL.insertDLL(3,0)
     DLL.insertDLL(4,0)
     DLL.insertDLL(55,0)
     DLL.insertDLL(6,3)
-    
+    DLL.insertDLL(17)
     DLL.printDLL()
     DLL.reversePrintDLL()
     DLL.searchValueDLL(1)
+    DLL.printDLL()
+    DLL.deleteNodeOfDLL(0)
+    DLL.printDLL()
     DLL.deleteNodeOfDLL(5)
     DLL.printDLL()
-    DLL.deleteNodeOfDLL(2)
+    DLL.deleteNodeOfDLL(5)
     DLL.printDLL()
-    DLL.deleteNodeOfDLL()
-    DLL.printDLL()
+    DLL.deleteNodeOfDLL(5)
     DLL.reversePrintDLL()
+    DLL.printDLL()
+    DLL.deleteNodeOfDLL(2)
+    DLL.deleteNodeOfDLL()
+    DLL.reversePrintDLL()
+    DLL.deleteNodeOfDLL()
+    DLL.reversePrintDLL()
+    DLL.deleteNodeOfDLL(5)
+    DLL.printDLL()
+    DLL.deleteNodeOfDLL(1)
+    DLL.reversePrintDLL()
+    DLL.printDLL()
     DLL.deleteAllDLL()
 
+
     print('complete')
+
+
+
